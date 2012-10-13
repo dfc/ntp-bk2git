@@ -14,10 +14,12 @@ do
     mv $BASEDIR/$OLD/.git  $BASEDIR/$x
 
 	LOGDATE=$(date -r ChangeLog +%s)
+	declare -x GIT_AUTHOR_DATE=$LOGDATE
+	declare -x GIT_COMMITTER_DATE=$LOGDATE
 
     git diff ChangeLog |grep ^+|grep -v b/ChangeLog|cut -c 2- |tail -n +2 > $CHLG
     git add -A
-    git commit --author="$NTPAUTHOR" --date="$LOGDATE" -F $CHLG
+    git commit --author="$NTPAUTHOR"  -F $CHLG
     git tag  -F $CHLG $VER
 
     OLD=$x
