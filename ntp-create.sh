@@ -1,8 +1,9 @@
 #!/bin/bash
 
 BASEDIR=/var/repos/ntp-dev-factory
-OLD=ntp-mirror
+OLD=ntp-dev-4.2.7
 CHLG=$BASEDIR/chlg
+NTPAUTHOR="Harlan Stenn <stenn@ntp.org>"
 
 cd $BASEDIR
 
@@ -11,10 +12,14 @@ do
     VER=$(echo $x|cut -f 3 -d \-)
     cd $BASEDIR/$x
     mv $BASEDIR/$OLD/.git  $BASEDIR/$x
+
+	LOGDATE=$(date -r ChangeLog +%s)
+
     git diff ChangeLog |grep ^+|grep -v b/ChangeLog|cut -c 2- |tail -n +2 > $CHLG
     git add -A
-    cat $CHLG  |git commit --author="Harlan Stenn <stenn@ntp.org>" -F -
-    cat $CHLG  |git tag  -F - $VER
+    git commit --author="$NTPAUTHOR" --date="$LOGDATE" -F $CHLG
+    git tag  -F $CHLG $VER
+
     OLD=$x
 done
 
